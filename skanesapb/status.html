@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    $(if refresh-timeout)
+    <meta http-equiv="refresh" content="$(refresh-timeout-secs)">
+    $(endif)
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <title>SKANESA PANCUR BATU - Status Koneksi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        $(if advert-pending == 'yes')
+            var popup = '';
+            function focusAdvert() {
+                if (window.focus) popup.focus();
+            }
+            function openAdvert() {
+                popup = open('$(link-advert)', 'hotspot_advert', '');
+                setTimeout("focusAdvert()", 1000);
+            }
+        $(endif)
+        function openLogout() {
+            if (window.name != 'hotspot_status') return true;
+            open('$(link-logout)', 'hotspot_logout', 'toolbar=0,location=0,directories=0,status=0,menubars=0,resizable=1,width=280,height=250');
+            window.close();
+            return false;
+        }
+    </script>
+</head>
+
+<body $(if advert-pending == 'yes') onLoad="openAdvert()" $(endif)>
+    <div class="main">
+        <div class="wrap">
+            <div class="brand-logo-container">
+                <img src="img/logo.png" alt="Logo SMKN 1 Pancur Batu" class="brand-logo" />
+            </div>
+            <div class="brand-title">SKANESA <span>PANCUR BATU</span></div>
+            <div class="brand-subtitle">Status Koneksi</div>
+
+            <p class="info" style="margin-bottom: 12px;">
+                $(if login-by == 'trial')
+                    Selamat datang, Pengguna Gratis!
+                $(elif login-by != 'mac')
+                    Selamat datang, <b>$(username)</b>!
+                $(endif)
+            </p>
+
+            <form action="$(link-logout)" name="logout" onSubmit="return openLogout()">
+                <table>
+                    <tr><td>IP Address</td><td>$(ip)</td></tr>
+                    <tr><td>Upload / Download</td><td>$(bytes-in-nice) / $(bytes-out-nice)</td></tr>
+                    $(if session-time-left)
+                        <tr><td>Waktu Aktif / Sisa</td><td>$(uptime) / $(session-time-left)</td></tr>
+                    $(else)
+                        <tr><td>Durasi Terhubung</td><td>$(uptime)</td></tr>
+                    $(endif)
+                    $(if blocked == 'yes')
+                        <tr><td>Status</td><td><a href="$(link-advert)" target="hotspot_advert">Lihat Iklan</a></td></tr>
+                    $(elif refresh-timeout)
+                        <tr><td>Refresh Status</td><td>$(refresh-timeout)</td></tr>
+                    $(endif)
+                </table>
+
+                $(if login-by-mac != 'yes')
+                    <input type="submit" value="Putuskan Koneksi">
+                $(endif)
+            </form>
+
+            <a href="beli.html" target="_blank" class="btn-buy">
+                🛒 Voucher Online
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

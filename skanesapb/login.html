@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="-1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SKANESA PANCUR BATU - Hotspot Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    $(if chap-id)
+    <form name="sendin" action="$(link-login-only)" method="post" style="display:none">
+        <input type="hidden" name="username" />
+        <input type="hidden" name="password" />
+        <input type="hidden" name="dst" value="$(link-orig)" />
+        <input type="hidden" name="popup" value="true" />
+    </form>
+
+    <script src="/md5.js"></script>
+    <script>
+        function doLogin() {
+            var mode = document.getElementById('loginMode').value;
+            var u = document.login.username.value;
+            var p = mode === 'voucher' ? u : document.login.password_input.value;
+            
+            document.sendin.username.value = u;
+            document.sendin.password.value = hexMD5('$(chap-id)' + p + '$(chap-challenge)');
+            document.sendin.submit();
+            return false;
+        }
+    </script>
+    $(endif)
+
+    <div class="main">
+        <div class="wrap">
+            <!-- Logo Sekolah -->
+            <div class="brand-logo-container">
+                <img src="img/logo.png" alt="Logo SMK Negeri 1 Pancur Batu" class="brand-logo" />
+            </div>
+
+            <!-- Typography Brand -->
+            <div class="brand-title">SKANESA <span>PANCUR BATU</span></div>
+            <div class="brand-subtitle">SMK NEGERI 1 PANCUR BATU HOTSPOT</div>
+
+            <!-- Tab Switcher (Member di Kiri, Voucher di Kanan) -->
+            <div class="tab-container">
+                <button type="button" class="tab-btn active" id="tabMember" onclick="switchMode('member')">Guru</button>
+                <button type="button" class="tab-btn" id="tabVoucher" onclick="switchMode('voucher')">Siswa</button>
+            </div>
+
+            <p class="info $(if error)alert$(endif)">
+                $(if error == "")
+                    Masukkan username dan password Anda untuk masuk.
+                    $(if trial == 'yes')<br />Atau coba <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)">Akses Gratis</a>.$(endif)
+                $(endif)
+                $(if error)$(error)$(endif)
+            </p>
+
+            <form name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+                <input type="hidden" name="dst" value="$(link-orig)" />
+                <input type="hidden" name="popup" value="true" />
+                <input type="hidden" id="loginMode" value="member" />
+
+                <div class="input-group">
+                    <img class="ico" src="img/user.svg" alt="user" />
+                    <input name="username" id="usernameInput" type="text" value="$(username)" placeholder="Username Member" required autocomplete="off" />
+                </div>
+
+                <div class="input-group" id="passwordGroup" style="display: block;">
+                    <img class="ico" src="img/password.svg" alt="password" />
+                    <input name="password_input" id="passwordInput" type="password" placeholder="Password" />
+                </div>
+
+                <input type="submit" value="Masuk Jaringan" />
+            </form>
+
+            <!-- Tombol Pembelian Voucher Online -->
+            <a href="beli.html" target="_blank" class="btn-buy">
+                🛒 Voucher Online
+            </a>
+
+            <p class="info bt">SMKN 1 Pancur Batu Network &copy; All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        function switchMode(mode) {
+            var tabVoucher = document.getElementById('tabVoucher');
+            var tabMember = document.getElementById('tabMember');
+            var passGroup = document.getElementById('passwordGroup');
+            var userInput = document.getElementById('usernameInput');
+            var loginMode = document.getElementById('loginMode');
+
+            loginMode.value = mode;
+
+            if (mode === 'voucher') {
+                tabVoucher.classList.add('active');
+                tabMember.classList.remove('active');
+                passGroup.style.display = 'none';
+                userInput.placeholder = 'Kode Voucher';
+            } else {
+                tabMember.classList.add('active');
+                tabVoucher.classList.remove('active');
+                passGroup.style.display = 'block';
+                userInput.placeholder = 'Username Member';
+            }
+        }
+    </script>
+</body>
+</html>
